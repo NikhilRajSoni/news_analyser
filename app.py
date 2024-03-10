@@ -40,7 +40,7 @@ github = oauth.register(
     client_kwargs={'scope': 'user:email'},
 )
 
-# PostgreSQL Database Configuration
+# PostgreSQL Database Configuration.............
 DB_HOST = 'localhost'
 DB_NAME = 'dhp2024'
 DB_USER = 'postgres'
