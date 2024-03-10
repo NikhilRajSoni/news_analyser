@@ -17,6 +17,7 @@ from authlib.integrations.flask_client import OAuth
 from nltk.tag import pos_tag
 from urllib.error import HTTPError
 
+nltk.download('all')
 
 
 app = Flask(__name__)
@@ -40,11 +41,14 @@ github = oauth.register(
     client_kwargs={'scope': 'user:email'},
 )
 
+
+
 # PostgreSQL Database Configuration.............
-DB_HOST = 'localhost'
-DB_NAME = 'dhp2024'
-DB_USER = 'postgres'
-DB_PASSWORD = 'Nikhil@sitare'
+DB_HOSTS = 'dpg-cnmngba1hbls739hfl3g-a.oregon-postgres.render.com'
+DB_NAME = 'nikhil'
+DB_USER = 'nikhil_user'
+DB_PASSWORD = 'enT0wQTf9twsljGbeciMprAqKpXny8xi'
+DB_HOST = f"{DB_HOSTS}"
 
 ADMIN_PASSWORD = 'Nikhil@sitare'
 
@@ -54,7 +58,9 @@ def connect_to_database():
             dbname=DB_NAME,
             user=DB_USER,
             password=DB_PASSWORD,
-            host=DB_HOST
+            host=DB_HOST,
+            port="5432"
+
         )
         return conn
     except psycopg2.Error as e:
@@ -220,8 +226,11 @@ def submit_url():
 
         # Store data in PostgreSQL database
         try:
+            
             conn = connect_to_database()
+            create_news_data_table()
             cursor = conn.cursor()
+            create_news_data_table()
             cursor.execute("INSERT INTO news1(url, headline, text, num_sentences, num_words, pos_tags, publish_date, art_writer, stop_word_count, sentiment, Keywords) VALUES(%s, %s, %s, %s, %s, %s,%s,%s,%s, %s, %s)",
                             (url, topic, cleaned_text, num_sentences, word_count, pos_dict, date, writer, s_count, sentiment, freq_10))
             conn.commit()
@@ -347,5 +356,4 @@ def github_logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 
